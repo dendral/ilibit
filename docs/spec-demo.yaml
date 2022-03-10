@@ -12,7 +12,7 @@ tags:
   - name: Transactions
     description: Transactions related operations
 paths:
-  /login/user/{accountId}/transactions:
+  /api/v1/account/{accountId}/transactions:
     get:
       tags:
         - Transactions
@@ -25,7 +25,7 @@ paths:
             type: number
             example: 1234567890
           required: true
-        - name: starDate
+        - name: startDate
           in: query
           schema:
             type: string
@@ -55,9 +55,9 @@ paths:
                 {
                   "date": "11-01-2022",
                   "hour": "20:22:13",
-                  "amount": 10.10,
-                  "description": "Amazon toys",
-                  "type": "C"
+                  "amount": 3000.00,
+                  "description": "Transfer from paco",
+                  "type": "A"
                 }]
         401:
           description: Unauthorized
@@ -230,4 +230,5 @@ components:
                 type: string
               type:
                 type: string
+
 
