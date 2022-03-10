@@ -1,0 +1,233 @@
+openapi: 3.0.1
+info:
+  title: API demo specifications
+  description: |
+    ### Definition of the APIs used by the front-end
+  contact:
+    email: contact@domain.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+tags:
+  - name: Transactions
+    description: Transactions related operations
+paths:
+  /login/user/{accountId}/transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get the account transactions 
+      operationId: getTransactions
+      parameters:
+        - name: accountId
+          in: path
+          schema:
+            type: number
+            example: 1234567890
+          required: true
+        - name: starDate
+          in: query
+          schema:
+            type: string
+            example: 11-01-2022
+          required: true
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            example: 29-03-2022
+          required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transactions'
+              example:
+                transactions: [{
+                  "date": "11-01-2022",
+                  "hour": "20:22:13",
+                  "amount": 10.10,
+                  "description": "Amazon toys",
+                  "type": "C"
+                },
+                {
+                  "date": "11-01-2022",
+                  "hour": "20:22:13",
+                  "amount": 10.10,
+                  "description": "Amazon toys",
+                  "type": "C"
+                }]
+        401:
+          description: Unauthorized
+        400:
+          description: Bad Request
+        500:
+          description: Internal server error
+  /vserver/positions/api/query/positionWindow:
+    post:
+      tags:
+        - Positions
+      summary: Intraday positions
+      operationId: retrievePositions
+      parameters:
+        - name: X-Auth-Token
+          in: header
+          schema:
+            type: string
+            example: userTokenObtainedFromLogin
+      requestBody:
+        description: Filters to query the intraday positions
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+            examples:
+              PositionsReport:
+                value:
+                  command: ON-DEMAND-SELECT
+                  params:
+                    VIEW: positionWindow
+                    FIELDS: bbgSymbol,bbSymbol,account,symbol,positionSide,exchangeDescription,sedol,currentPosition,usdNotional,bookName,last,lastUpdated,fxRate,fxSymbol,currency,instrumentType,securityId
+                    ORDERBY: bookName,bbSymbol
+                    WHERE: isActive = true
+                    DIRECTION: ASC
+                    LIMIT: 100
+              IntradayPositions:
+                value:
+                  command: ON-DEMAND-SELECT
+                  params:
+                    VIEW: positionWindow
+                    FIELDS: pmGroup, bbsymbol, account, positionId, positionDate
+                    WHERE: isActive=true and pmGroup='Lighthouse SIM'
+                    GROUPBY: bbSymbol
+              MetadataPositions:
+                value:
+                  command: METADATA
+                  params:
+                    VIEW: positionWindow
+        required: true
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+              example:
+                ts: 1644434440999
+                pt: 38
+                cpt: null
+                queryId: "emstest1_1644434460023"
+                data: [{
+                  "pmGroup": "TESTPM",
+                  "positionId": "TOELEVEN_TEST.6251363.2022-02-09",
+                  "account": "ToEleven_Test",
+                  "bbsymbol": "1925 JT Equity",
+                  "positionDate": [
+                      2022,
+                      2,
+                      9
+                  ]
+                }]
+                ok: 0
+                error: null
+                metadata: null
+                ip: "172.31.28.197"
+                count: null
+        401:
+          description: Unauthorized
+        400:
+          description: Bad Request
+        500:
+          description: Internal server error
+
+components:
+  schemas:
+    Query:
+      required:
+        - command
+        - params
+      type: object
+      properties:
+        command:
+          type: string
+          description: Type of query to execute
+          example:
+            HISTORICAL
+          enum:
+            - HISTORICAL
+            - ON-DEMAND-SELECT
+            - METADATA2
+        params:
+          $ref: '#/components/schemas/Params'
+      xml:
+        name: Query
+    Params:
+      type: object
+      properties:
+        VIEW:
+          type: string
+          example: positionWindow
+        FIELDS:
+          type: string
+          example: bbSymbol, AVG(usdDayPnL) as average, FIRST(usdDayPnL) AS first, LAST(usdDayPnL) AS last, TIME_BUCKET('1h') tb
+        WHERE:
+          type: string
+          example: positionDate='2022-01-13' AND bbSymbol = 'YOU GY Equity'
+        GROUPBY:
+          type: string
+          example: bbSymbol, tb
+        ORDERBY:
+          type: string
+          example: bbSymbol, tb
+      xml:
+        name: Params
+    ApiResponse:
+      type: object
+      properties:
+        ts:
+          type: integer
+          format: int32
+        data:
+          type: array
+          items:
+            properties:
+              prop1:
+                type: string
+              prop2:
+                type: string
+              propn:
+                type: integer
+        ok:
+          type: string
+          example: "0"
+        ip:
+          type: string
+          example: "192.168.0.1"
+        count:
+          type: integer
+          format: int32
+          example: 1
+    Transactions:
+      type: object
+      properties:
+        ts:
+          type: integer
+          format: int32
+        transactions:
+          type: array
+          items:
+            properties:
+              date:
+                type: string
+              hour:
+                type: string
+              amount:
+                type: number
+              description:
+                type: string
+              type:
+                type: string
+
