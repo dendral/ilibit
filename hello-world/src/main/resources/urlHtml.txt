@@ -1,0 +1,3 @@
+https://mail.codejava.net/frameworks/spring-boot/spring-boot-thymeleaf-form-handling-tutorial
+
+https://mkyong.com/spring-boot/spring-boot-ajax-example/

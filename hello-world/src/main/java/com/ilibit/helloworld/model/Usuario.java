@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Usuario {
     private String name;
     private String lastname;
     private Integer age;
@@ -19,7 +19,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Usuario{" +
                 "name='" + name + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", age=" + age +

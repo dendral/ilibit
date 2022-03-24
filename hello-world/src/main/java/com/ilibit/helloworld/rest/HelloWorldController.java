@@ -1,6 +1,6 @@
 package com.ilibit.helloworld.rest;
 
-import com.ilibit.helloworld.model.User;
+import com.ilibit.helloworld.model.Usuario;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,7 +11,7 @@ public class HelloWorldController {
     }
 
     @PostMapping(path = "/insert-user")
-    public String insertUser(@RequestBody User usuario){
+    public String insertUser(@RequestBody Usuario usuario){
         System.out.println("User: " + usuario);
 
         return "User inserted successfully";
