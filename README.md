@@ -8,4 +8,3 @@ https://mail.codejava.net/frameworks/spring-boot/spring-boot-thymeleaf-form-hand
 
 https://mkyong.com/spring-boot/spring-boot-ajax-example/
 
-Text
